@@ -5,5 +5,4 @@ SMTP_CONFIG = {
     'sender_email': 'ti3690505@gmail.com',
     'password': 'yemg zoda igmk lklv'
 }
-
 TRACKING_URL = 'http://localhost:5000/click'
