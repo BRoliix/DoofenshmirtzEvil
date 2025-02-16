@@ -13,10 +13,12 @@ import base64 as b64
 # Constants
 SAVED_DOCUMENTS_DIR = "saved_documents"
 SCENARIOS_FILE = "phishing_scenarios.json"
-MAILHOG_HOST = "10.30.72.225"
+PHISHED_LOG_FILE = 'log.json'
+
+MAILHOG_HOST = "localhost"
 MAILHOG_PORT = 1025
-TRACKING_HOST="10.30.75.136"
-TRACKING_PORT="9999"
+TRACKING_HOST = "localhost"
+TRACKING_PORT = 9999
 
 
 os.makedirs(SAVED_DOCUMENTS_DIR, exist_ok=True)
@@ -54,6 +56,8 @@ SIGNATURE:
 [Professional signature]
 
 Remember: Only output the email content exactly as specified above, no explanations or additional text. Give only one response as well. Do not include any links or text that might lead to links.
+you are john and assume certain roles
+and your target is jane and also assume roles
 """
 
 def send_to_mailhog(email_content, target_email):
@@ -70,16 +74,16 @@ def send_to_mailhog(email_content, target_email):
     # Create message
     msg = MIMEMultipart()
     msg['Subject'] = subject
-    msg['From'] = "security.test@company.local"
+    msg['From'] = "no-reply@amzoon.com"
     msg['To'] = target_email
     
     # link = f"[Press Here]({generate_phishing_link(target_email, subject)}"
-    # link = f"<a href={generate_phishing_link(target_email, subject)}>Press Here</a>"
-    link = f"{generate_phishing_link(target_email, subject)}"
+    link = f"<a href=http://{generate_phishing_link(target_email, subject)}>Press Here</a>"
+    # link = f"{generate_phishing_link(target_email, subject)}"
 
     # Combine body and signature
-    full_body = f"{body}\n{link}\n{signature}\n"
-    msg.attach(MIMEText(full_body, 'plain'))
+    full_body = f'<div style="white-space:pre-wrap;font-family: Verdana;">{body}<br/>{link}<br/>{signature}\n</div>'
+    msg.attach(MIMEText(full_body, 'html'))
     
     try:
         with smtplib.SMTP(MAILHOG_HOST, MAILHOG_PORT) as server:
@@ -92,7 +96,7 @@ def send_to_mailhog(email_content, target_email):
 def generate_phishing_link(target_email, subject):
     target_specifier= b64.b64encode(target_email.encode('utf-8')).decode('utf-8')
     tracking = b64.b64encode(subject.encode('utf-8')).decode('utf-8')
-    return f'{TRACKING_HOST}:{TRACKING_PORT}/{target_specifier}?subject=${tracking}'
+    return f'{TRACKING_HOST}:{TRACKING_PORT}/{target_specifier}?subject={tracking}'
 
 def save_document(uploaded_file):
     if uploaded_file is None:
@@ -149,7 +153,7 @@ def generate_phishing_email(document_text, scenario_details):
     )
     
     response = ollama.chat(
-        model="deepseek-r1:1.5b",
+        model="deepseek-r1:7b",
         messages=[{"role": "user", "content": formatted_prompt}],
     )
     
@@ -176,7 +180,7 @@ def main():
         st.session_state.initialized = True
         clear_uploaded_files()
 
-    st.title("Security Awareness Email Generator")
+    st.title("S.S.T.R.")
     
     with st.sidebar:
         st.header("Organization Context")
@@ -185,7 +189,7 @@ def main():
             file_path = save_document(uploaded_file)
             st.success(f"Document saved: {uploaded_file.name}")
 
-    tab1, tab2, tab3 = st.tabs(["Generate Email", "View History", "Send to MailHog"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Generate Email", "View History", "Send to MailHog", "Phished History"])
     
     with tab1:
         st.header("Email Generation Parameters")
@@ -257,6 +261,16 @@ def main():
             else:
                 if send_to_mailhog(email_content, target_email):
                     st.success("Email sent to MailHog successfully!")
+    
+    with tab4:
+        st.header("Phished Email History")
+        if os.path.exists(PHISHED_LOG_FILE):
+            with open(PHISHED_LOG_FILE, 'r') as f:
+                phished = json.load(f)
+                for row in reversed(phished):
+                    with st.expander(f"📧 {row['user']}"):
+                        st.write(f"**On:** {row['subject']}")
+                        st.write(f"**When:** {row['timestamp']}")
 
 if __name__ == "__main__":
     main()
