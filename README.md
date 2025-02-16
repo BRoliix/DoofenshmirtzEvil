@@ -1,6 +1,6 @@
 # HookLess
 
-**An AI agent for creating realistic phishing simulation for security training purposes	**
+<b>An AI agent for creating realistic phishing simulation for security training purposes
 
 ![screenshot.png](image.png)
 
@@ -9,11 +9,7 @@
 - [Key Features](#key-features)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Configuration](#configuration)
 - [Usage Guide](#usage-guide)
-- [Security Considerations](#security-considerations)
-- [Troubleshooting](#troubleshooting)
-- [Customization](#customization)
 - [License](#license)
 
 This AI Agent enables security teams to:
@@ -99,13 +95,18 @@ uv run streamlit run main.py
 ### 1. Document Upload
 ```mermaid
 graph TD
-  A[Upload PDF/TXT] --> B[Document Processing]
-  B --> C[Context Storage]
+    Admin --> Mailhog
+    Mailhog --> Admin
+    Admin --> Mail_gen[Mail Generator]
+    Mail_gen --> Mailhog
+    Admin --> LLM
+    LLM --> Admin
+    LLM --> Mail_gen
+
 ```
 
 - Supported formats: PDF, TXT
 - Max file size: 50MB
-- Encryption: AES-256 at rest
 
 ### 2. Email Generation
 **Parameters:**
