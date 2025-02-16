@@ -10,7 +10,6 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage Guide](#usage-guide)
-- [License](#license)
 
 This AI Agent enables security teams to:
 - Generate realistic phishing emails using organizational context
@@ -149,8 +148,3 @@ PHISHING_PROMPT_TEMPLATE = """
 1. Edit scenario selection dropdown
 2. Update prompt template logic
 3. Modify history tracking parameters
-
-## License
-
-Copyright (C) [2025] [Wanderer0074348]  
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.  
