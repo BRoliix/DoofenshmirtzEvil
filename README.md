@@ -1,1 +1,173 @@
-# DoofenshmirtzEvil
+# HookLess
+
+**An AI agent for creating realistic phishing simulation for security training purposes	**
+
+![screenshot.png](image.png)
+
+## Table of Contents
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage Guide](#usage-guide)
+- [Security Considerations](#security-considerations)
+- [Troubleshooting](#troubleshooting)
+- [Customization](#customization)
+- [License](#license)
+
+This AI Agent enables security teams to:
+- Generate realistic phishing emails using organizational context
+- Maintain historical records of simulated campaigns
+- Conduct security awareness training exercises
+
+Built with:
+- **Streamlit** for UI/UX
+- **Ollama** (DeepSeek-R1 1.5B model) for email generation
+- **PyMuPDF** for document processing
+- **MailHog** for email testing
+
+## Key Features
+
+### Core Functionality
+| Feature | Description |
+|---------|-------------|
+| Document Context Integration | Process PDF/TXT documents to inform email content |
+| Scenario Customization | 9 predefined phishing scenarios + custom options |
+| MailHog Integration | Safe email testing environment |
+| Historical Tracking | Scenario history storage |
+| Multi-Department Support | Target specific organizational units |
+
+### Security Features
+- Local document storage encryption
+- Local Gen AI model(DeepSeek R1 1.5B parameter for testing) for sensitive data isolation
+- MailHog sandboxing to simulate mail servers
+- Audit trails for generated content to understand high risk individuals
+
+## Prerequisites
+
+**Required Services for Emulation:**
+1. **Ollama** (with DeepSeek-R1 1.5B model)
+   ```bash
+   ollama pull deepseek-r1:1.5b
+   ```
+2. **MailHog** (Docker recommended) (run locally if possible)
+   ```bash
+   docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+   ```
+
+## Installation
+
+1. Clone repository
+   ```bash
+   git clone https://github.com/Wanderer0074348/DoofenshmirtzEvil.git
+   cd DoofenshmirtzEvil
+   ```
+
+
+2. Set up environment
+   ```bash
+   uv venv 
+   source .venv/bin/activate
+   ```
+
+3. Install dependencies
+   ```bash
+   uv pip install -r requirements.txt
+   ```
+
+   ```bash
+   mkdir -p saved_documents
+   touch phishing_scenarios.json
+   ```
+
+
+### File Structure
+```
+├── main.py                 # Main application
+├── saved_documents/       # Uploaded organizational docs
+├── phishing_scenarios.json# Scenario history
+└── requirements.txt       # Dependencies
+```
+
+## Usage Guide
+
+### 1. Document Upload
+```mermaid
+graph TD
+  A[Upload PDF/TXT] --> B[Document Processing]
+  B --> C[Context Storage]
+```
+
+- Supported formats: PDF, TXT
+- Max file size: 50MB
+- Encryption: AES-256 at rest
+
+### 2. Email Generation
+**Parameters:**
+- Organization Name
+- Target Department
+- Scenario Type (9 presets + custom)
+
+**Generation Process:**
+1. Select scenario parameters
+2. Click "Generate Test Email"
+3. Review output in markdown format
+
+### 3. MailHog Testing
+```bash
+# Send test email
+curl http://localhost:8025/api/v2/messages
+```
+
+1. Copy generated email content
+2. Paste into "Send to MailHog" tab
+3. Enter target email address
+4. Click send
+
+## Security Considerations
+
+⚠️ **Important Protocols**
+- Use only test email addresses
+- Never include real credentials
+- Regularly purge saved documents
+- Limit access to authorized personnel
+- Enable VPN for remote access
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| MailHog connection failed | Verify Docker service status |
+| Document processing error | Check file encoding/format |
+| Model not responding | Confirm Ollama service running |
+| History not saving | Validate JSON file permissions |
+
+## Customization
+
+### Modify Prompt Template
+Edit `PHISHING_PROMPT_TEMPLATE` in code:
+```python
+PHISHING_PROMPT_TEMPLATE = """
+[Your custom template here]
+"""
+```
+
+### Add New Scenario Types
+1. Edit scenario selection dropdown
+2. Update prompt template logic
+3. Modify history tracking parameters
+
+## License
+
+Apache 2.0 License - See [LICENSE](https://www.apache.org/licenses/LICENSE-2.0)
+
+---
+
+**Maintainer:** Security Engineering Team  
+**Contact:** security@yourcompany.com  
+**Last Updated:** 2025-02-16
+
+Citations:
+[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/27487766/f592b143-2fd0-4d96-b4bd-ee942cc976d8/paste.txt
+[2] https://example.com/path/to/your/code
