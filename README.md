@@ -84,10 +84,14 @@ Built with:
 
 ### File Structure
 ```
-├── main.py                 # Main application
+├── main.py                # Main application
 ├── saved_documents/       # Uploaded organizational docs
 ├── phishing_scenarios.json# Scenario history
 └── requirements.txt       # Dependencies
+```
+## Run Command
+```bash
+uv run streamlit run main.py
 ```
 
 ## Usage Guide
@@ -116,6 +120,11 @@ graph TD
 
 ### 3. MailHog Testing
 ```bash
+sudo apt-get -y install golang-go
+go get github.com/mailhog/MailHog
+```
+
+```bash
 # Send test email
 curl http://localhost:8025/api/v2/messages
 ```
@@ -124,24 +133,6 @@ curl http://localhost:8025/api/v2/messages
 2. Paste into "Send to MailHog" tab
 3. Enter target email address
 4. Click send
-
-## Security Considerations
-
-⚠️ **Important Protocols**
-- Use only test email addresses
-- Never include real credentials
-- Regularly purge saved documents
-- Limit access to authorized personnel
-- Enable VPN for remote access
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| MailHog connection failed | Verify Docker service status |
-| Document processing error | Check file encoding/format |
-| Model not responding | Confirm Ollama service running |
-| History not saving | Validate JSON file permissions |
 
 ## Customization
 
@@ -160,14 +151,5 @@ PHISHING_PROMPT_TEMPLATE = """
 
 ## License
 
-Apache 2.0 License - See [LICENSE](https://www.apache.org/licenses/LICENSE-2.0)
-
----
-
-**Maintainer:** Security Engineering Team  
-**Contact:** security@yourcompany.com  
-**Last Updated:** 2025-02-16
-
-Citations:
-[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/27487766/f592b143-2fd0-4d96-b4bd-ee942cc976d8/paste.txt
-[2] https://example.com/path/to/your/code
+Copyright (C) [2025] [Wanderer0074348]  
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.  
