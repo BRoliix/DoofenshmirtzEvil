@@ -92,7 +92,7 @@ def send_to_mailhog(email_content, target_email):
 def generate_phishing_link(target_email, subject):
     target_specifier= b64.b64encode(target_email.encode('utf-8')).decode('utf-8')
     tracking = b64.b64encode(subject.encode('utf-8')).decode('utf-8')
-    return f'{TRACKING_HOST}:{TRACKING_PORT}/{target_specifier}?subject=${tracking}'
+    return f'{TRACKING_HOST}:{TRACKING_PORT}/{target_specifier}?subject={tracking}'
 
 def save_document(uploaded_file):
     if uploaded_file is None:
