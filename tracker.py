@@ -1,23 +1,32 @@
 from flask import Flask, request, redirect
 import base64 as b64
+from datetime import datetime
 
 app = Flask(__name__)
 
-@app.route('/api/<user_id>', methods=['GET'])
+@app.route('/<user_id>', methods=['GET'])
 def redirect_user(user_id):
-
-
-    subject = request.args.get('subject', default="general", type=str)
+    subject = request.args.get('subject', default="Z2VuZXJhbA==", type=str)  # "general" encoded
     
+    try:
+        decoded_user = b64.b64decode(user_id).decode('utf-8')
+        decoded_subject = b64.b64decode(subject).decode('utf-8')
+    except Exception as e:
+        return "Invalid Base64 encoding", 400  # Return HTTP 400 if decoding fails
+
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
     tracking_object = {
-        'user' : b64.b64decode(user_id).decode('utf-8'),
-        'subject' : b64.b64decode(subject).decode('utf-8')
+        'user': decoded_user,
+        'subject': decoded_subject,
+        'timestamp': timestamp
     }
-    # Define the target URL format (modify as needed)
-    target_url = f"https://example.com/profile/{user_id}?subject={subject}"
+
+    print(tracking_object)  # Logs the request data
     
-    return redirect(target_url, code=302)  # 302 Found (Temporary Redirect)
+    return redirect("https://www.amazon.com", code=302)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=9999, debug=True)
 
