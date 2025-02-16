@@ -82,7 +82,7 @@ def send_to_mailhog(email_content, target_email):
     # link = f"{generate_phishing_link(target_email, subject)}"
 
     # Combine body and signature
-    full_body = f"{body}<br/>{link}<br/>{signature}\n"
+    full_body = f'<div style="white-space:pre-wrap;font-family: Verdana;">{body}<br/>{link}<br/>{signature}\n</div>'
     msg.attach(MIMEText(full_body, 'html'))
     
     try:
@@ -180,7 +180,7 @@ def main():
         st.session_state.initialized = True
         clear_uploaded_files()
 
-    st.title("Security Awareness Email Generator")
+    st.title("S.S.T.R.")
     
     with st.sidebar:
         st.header("Organization Context")

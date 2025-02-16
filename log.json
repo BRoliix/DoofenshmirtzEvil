@@ -3,5 +3,10 @@
         "user": "abc@abc.com",
         "subject": "Amazon Invoice Payment Required: Urgent Alert",
         "timestamp": "2025-02-16 13:55:42"
+    },
+    {
+        "user": "john@company.com",
+        "subject": "Urgent: Reset Your Password [Your Name] Has Been Changed to [New Password]",
+        "timestamp": "2025-02-16 14:08:26"
     }
 ]
