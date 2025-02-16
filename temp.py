@@ -13,6 +13,8 @@ import base64 as b64
 # Constants
 SAVED_DOCUMENTS_DIR = "saved_documents"
 SCENARIOS_FILE = "phishing_scenarios.json"
+PHISHED_LOG_FILE = 'log.json'
+
 MAILHOG_HOST = "localhost"
 MAILHOG_PORT = 1025
 TRACKING_HOST = "localhost"
@@ -76,12 +78,12 @@ def send_to_mailhog(email_content, target_email):
     msg['To'] = target_email
     
     # link = f"[Press Here]({generate_phishing_link(target_email, subject)}"
-    # link = f"<a href={generate_phishing_link(target_email, subject)}>Press Here</a>"
-    link = f"{generate_phishing_link(target_email, subject)}"
+    link = f"<a href=http://{generate_phishing_link(target_email, subject)}>Press Here</a>"
+    # link = f"{generate_phishing_link(target_email, subject)}"
 
     # Combine body and signature
-    full_body = f"{body}\n{link}\n{signature}\n"
-    msg.attach(MIMEText(full_body, 'plain'))
+    full_body = f"{body}<br/>{link}<br/>{signature}\n"
+    msg.attach(MIMEText(full_body, 'html'))
     
     try:
         with smtplib.SMTP(MAILHOG_HOST, MAILHOG_PORT) as server:
@@ -187,7 +189,7 @@ def main():
             file_path = save_document(uploaded_file)
             st.success(f"Document saved: {uploaded_file.name}")
 
-    tab1, tab2, tab3 = st.tabs(["Generate Email", "View History", "Send to MailHog"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Generate Email", "View History", "Send to MailHog", "Phished History"])
     
     with tab1:
         st.header("Email Generation Parameters")
@@ -259,6 +261,16 @@ def main():
             else:
                 if send_to_mailhog(email_content, target_email):
                     st.success("Email sent to MailHog successfully!")
+    
+    with tab4:
+        st.header("Phished Email History")
+        if os.path.exists(PHISHED_LOG_FILE):
+            with open(PHISHED_LOG_FILE, 'r') as f:
+                phished = json.load(f)
+                for row in reversed(phished):
+                    with st.expander(f"📧 {row['user']}"):
+                        st.write(f"**On:** {row['subject']}")
+                        st.write(f"**When:** {row['timestamp']}")
 
 if __name__ == "__main__":
     main()
