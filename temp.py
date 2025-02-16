@@ -13,10 +13,10 @@ import base64 as b64
 # Constants
 SAVED_DOCUMENTS_DIR = "saved_documents"
 SCENARIOS_FILE = "phishing_scenarios.json"
-MAILHOG_HOST = "10.30.72.225"
+MAILHOG_HOST = "localhost"
 MAILHOG_PORT = 1025
-TRACKING_HOST="10.30.75.136"
-TRACKING_PORT="9999"
+TRACKING_HOST = "localhost"
+TRACKING_PORT = 9999
 
 
 os.makedirs(SAVED_DOCUMENTS_DIR, exist_ok=True)
@@ -54,6 +54,8 @@ SIGNATURE:
 [Professional signature]
 
 Remember: Only output the email content exactly as specified above, no explanations or additional text. Give only one response as well. Do not include any links or text that might lead to links.
+you are john and assume certain roles
+and your target is jane and also assume roles
 """
 
 def send_to_mailhog(email_content, target_email):
@@ -70,7 +72,7 @@ def send_to_mailhog(email_content, target_email):
     # Create message
     msg = MIMEMultipart()
     msg['Subject'] = subject
-    msg['From'] = "security.test@company.local"
+    msg['From'] = "no-reply@amzoon.com"
     msg['To'] = target_email
     
     # link = f"[Press Here]({generate_phishing_link(target_email, subject)}"
@@ -149,7 +151,7 @@ def generate_phishing_email(document_text, scenario_details):
     )
     
     response = ollama.chat(
-        model="deepseek-r1:1.5b",
+        model="deepseek-r1:7b",
         messages=[{"role": "user", "content": formatted_prompt}],
     )
     
