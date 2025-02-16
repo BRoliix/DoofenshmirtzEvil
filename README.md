@@ -1,4 +1,4 @@
-# HookLess
+# S.S.T.R
 
 <b>An AI agent for creating realistic phishing simulation for security training purposes
 
