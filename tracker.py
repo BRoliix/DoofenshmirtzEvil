@@ -6,16 +6,15 @@ app = Flask(__name__)
 
 @app.route('/<user_id>', methods=['GET'])
 def redirect_user(user_id):
-    subject = request.args.get('subject', default="Z2VuZXJhbA==", type=str)  # "general" encoded
+    subject = request.args.get('subject', default="Z2VuZXJhbA==", type=str) 
     
     try:
         decoded_user = b64.b64decode(user_id).decode('utf-8')
         decoded_subject = b64.b64decode(subject).decode('utf-8')
     except Exception as e:
-        return "Invalid Base64 encoding", 400  # Return HTTP 400 if decoding fails
+        return "Invalid Base64 encoding", 400  
 
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
 
     tracking_object = {
         'user': decoded_user,
@@ -23,7 +22,7 @@ def redirect_user(user_id):
         'timestamp': timestamp
     }
 
-    print(tracking_object)  # Logs the request data
+    print(tracking_object) 
     
     return redirect("https://www.amazon.com", code=302)
 
