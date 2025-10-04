@@ -2,7 +2,7 @@
 
 <b>An AI agent for creating realistic phishing simulation for security training purposes
 
-![screenshot.png](image.png)
+![screenshot.png](public/image.png)
 
 ## Table of Contents
 - [Overview](#overview)
@@ -62,13 +62,12 @@ Built with:
 
 2. Set up environment
    ```bash
-   uv venv 
-   source .venv/bin/activate
+   uv init
    ```
 
 3. Install dependencies
    ```bash
-   uv pip install -r requirements.txt
+   uv sync
    ```
 
    ```bash
