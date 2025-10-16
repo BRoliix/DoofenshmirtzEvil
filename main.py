@@ -7,17 +7,23 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import fitz
-import ollama
 import streamlit as st
 
-# Cloud deployment compatibility
-if 'STREAMLIT_CLOUD' in os.environ or 'RENDER' in os.environ:
-    st.set_page_config(
-        page_title="S.S.T.R - Phishing Simulator",
-        page_icon="🎣",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
+# Set page config first (required for cloud deployment)
+st.set_page_config(
+    page_title="S.S.T.R - Phishing Simulator",
+    page_icon="🎣",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Try to import ollama, but handle cloud deployment gracefully
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    OLLAMA_AVAILABLE = False
+    st.warning("⚠️ Running in demo mode - Ollama not available in cloud environment")
 
 # Constants
 SAVED_DOCUMENTS_DIR = "saved_documents"
@@ -145,21 +151,26 @@ def clear_uploaded_files():
 
 
 def generate_phishing_email(document_text, scenario_details):
-    formatted_prompt = PHISHING_PROMPT_TEMPLATE.format(
-        document_text=document_text,
-        target_org=scenario_details["target_org"],
-        scenario_type=scenario_details["scenario_type"],
-        target_dept=scenario_details["target_dept"],
-    )
-
-    try:
-        response = ollama.chat(
-            model="deepseek-r1:1.5b",  # Changed to the correct model
-            # model="gemma3:latest",
-            messages=[{"role": "user", "content": formatted_prompt}],
+    # Check if Ollama is available before trying to use it
+    if OLLAMA_AVAILABLE:
+        formatted_prompt = PHISHING_PROMPT_TEMPLATE.format(
+            document_text=document_text,
+            target_org=scenario_details["target_org"],
+            scenario_type=scenario_details["scenario_type"],
+            target_dept=scenario_details["target_dept"],
         )
-        return clean_response(response["message"]["content"])
-    except Exception as e:
+
+        try:
+            response = ollama.chat(
+                model="deepseek-r1:1.5b",  # Changed to the correct model
+                # model="gemma3:latest",
+                messages=[{"role": "user", "content": formatted_prompt}],
+            )
+            return clean_response(response["message"]["content"])
+        except Exception as e:
+            st.warning(f"AI model error: {e}")
+    
+    # Fallback templates for cloud deployment
         # Enhanced fallback response when Ollama is not available
         st.info("🤖 AI Model unavailable - Using realistic demo templates")
         
@@ -363,4 +374,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error(f"Application startup error: {e}")
+        st.info("Please refresh the page or check the deployment logs.")
+        st.stop()
