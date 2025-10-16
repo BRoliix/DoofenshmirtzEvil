@@ -143,13 +143,41 @@ def generate_phishing_email(document_text, scenario_details):
         target_dept=scenario_details["target_dept"],
     )
 
-    response = ollama.chat(
-        model="gemma3:latest",
-        # model="deepseek-r1:1.5b",
-        messages=[{"role": "user", "content": formatted_prompt}],
-    )
+    try:
+        response = ollama.chat(
+            model="deepseek-r1:1.5b",  # Changed to the correct model
+            # model="gemma3:latest",
+            messages=[{"role": "user", "content": formatted_prompt}],
+        )
+        return clean_response(response["message"]["content"])
+    except Exception as e:
+        # Fallback response when Ollama is not available
+        st.warning(f"Ollama service not available: {e}")
+        st.info("Using demo mode with mock phishing email generation.")
+        
+        return f"""SUBJECT: Urgent: {scenario_details['scenario_type']} - Action Required for {scenario_details['target_org']}
 
-    return clean_response(response["message"]["content"])
+EMAIL:
+Dear {scenario_details['target_dept']} Team Member,
+
+We have detected unusual activity related to your account that requires immediate attention. As part of our enhanced security measures for {scenario_details['target_org']}, we need you to verify your credentials within the next 24 hours.
+
+**IMPORTANT NOTICE:** Failure to complete this verification may result in temporary account suspension to protect our systems and your data.
+
+To complete the verification process:
+1. Click on the secure verification link below
+2. Enter your current login credentials
+3. Follow the additional security steps
+
+This is a time-sensitive security measure. Please complete this process at your earliest convenience.
+
+SIGNATURE:
+Best regards,
+IT Security Team
+{scenario_details['target_org']} Information Systems
+security@{scenario_details['target_org'].lower().replace(' ', '')}.com
+
+[This is a simulated phishing email for training purposes - Ollama service not available]"""
 
 
 def save_scenario(scenario_details):
