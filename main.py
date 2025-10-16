@@ -10,6 +10,15 @@ import fitz
 import ollama
 import streamlit as st
 
+# Cloud deployment compatibility
+if 'STREAMLIT_CLOUD' in os.environ or 'RENDER' in os.environ:
+    st.set_page_config(
+        page_title="S.S.T.R - Phishing Simulator",
+        page_icon="🎣",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+
 # Constants
 SAVED_DOCUMENTS_DIR = "saved_documents"
 SCENARIOS_FILE = "mock/phishing_scenarios.json"

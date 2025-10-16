@@ -1,0 +1,14 @@
+# Streamlit Community Cloud Configuration
+# This file helps Streamlit Cloud understand your app requirements
+
+[theme]
+base = "dark"
+primaryColor = "#FF4B4B"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#262730"
+textColor = "#FFFFFF"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = false
