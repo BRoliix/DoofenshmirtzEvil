@@ -172,3 +172,7 @@ cython_debug/
 server/offload
 
 phishing_scenarios.json
+
+# App-specific directories
+saved_documents/
+*.log

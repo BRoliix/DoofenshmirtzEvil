@@ -151,33 +151,95 @@ def generate_phishing_email(document_text, scenario_details):
         )
         return clean_response(response["message"]["content"])
     except Exception as e:
-        # Fallback response when Ollama is not available
-        st.warning(f"Ollama service not available: {e}")
-        st.info("Using demo mode with mock phishing email generation.")
+        # Enhanced fallback response when Ollama is not available
+        st.info("🤖 AI Model unavailable - Using realistic demo templates")
         
-        return f"""SUBJECT: Urgent: {scenario_details['scenario_type']} - Action Required for {scenario_details['target_org']}
+        # Different templates based on scenario type
+        scenario_templates = {
+            "IT System Update": {
+                "subject": f"🔒 Critical Security Update Required - {scenario_details['target_org']}",
+                "content": f"""Dear {scenario_details['target_dept']} Team Member,
+
+We have identified critical security vulnerabilities affecting {scenario_details['target_org']}'s network infrastructure that require immediate attention.
+
+**URGENT ACTION REQUIRED:**
+Due to recent cybersecurity threats targeting organizations in our sector, we must implement emergency security patches across all systems.
+
+To maintain your access and protect sensitive data:
+• Verify your credentials immediately using the secure link below
+• Complete the security assessment within 24 hours
+• Update your authentication preferences
+
+**[SECURE VERIFICATION PORTAL - CLICK HERE]**
+
+Failure to complete this process may result in temporary account restrictions.
+
+Best regards,
+{scenario_details['target_org']} IT Security Team
+security-updates@{scenario_details['target_org'].lower().replace(' ', '')}.com"""
+            },
+            "Account Suspension": {
+                "subject": f"⚠️ Account Security Alert - Immediate Action Required",
+                "content": f"""SECURITY NOTIFICATION: {scenario_details['target_org']}
+
+Dear {scenario_details['target_dept']} Employee,
+
+We have detected suspicious login attempts on your account from an unrecognized device.
+
+ACCOUNT STATUS: ⚠️ TEMPORARILY RESTRICTED
+
+To restore full access:
+1. Verify your identity using our secure portal
+2. Review and approve recent login activity
+3. Update your security settings
+
+**[RESTORE ACCESS - SECURE LOGIN]**
+
+This is an automated security measure to protect your account and {scenario_details['target_org']}'s data.
+
+{scenario_details['target_org']} Security Operations Center
+Account Security Team"""
+            },
+            "Password Expiry": {
+                "subject": f"🔑 Password Expires Today - Update Required",
+                "content": f"""Password Expiration Notice - {scenario_details['target_org']}
+
+Hello {scenario_details['target_dept']} Team,
+
+Your network password will expire in 4 hours. To prevent service interruption:
+
+EXPIRATION TIME: Today at 11:59 PM
+SYSTEMS AFFECTED: Email, Network Drive, VPN Access
+
+**IMMEDIATE STEPS:**
+→ Click the secure password reset link below
+→ Create a strong new password
+→ Verify access to all systems
+
+**[UPDATE PASSWORD NOW - SECURE PORTAL]**
+
+Questions? Contact IT Support: helpdesk@{scenario_details['target_org'].lower().replace(' ', '')}.com
+
+{scenario_details['target_org']} IT Department"""
+            }
+        }
+        
+        # Get template or use default
+        template = scenario_templates.get(
+            scenario_details['scenario_type'], 
+            scenario_templates["IT System Update"]
+        )
+        
+        return f"""SUBJECT: {template['subject']}
 
 EMAIL:
-Dear {scenario_details['target_dept']} Team Member,
-
-We have detected unusual activity related to your account that requires immediate attention. As part of our enhanced security measures for {scenario_details['target_org']}, we need you to verify your credentials within the next 24 hours.
-
-**IMPORTANT NOTICE:** Failure to complete this verification may result in temporary account suspension to protect our systems and your data.
-
-To complete the verification process:
-1. Click on the secure verification link below
-2. Enter your current login credentials
-3. Follow the additional security steps
-
-This is a time-sensitive security measure. Please complete this process at your earliest convenience.
+{template['content']}
 
 SIGNATURE:
-Best regards,
-IT Security Team
-{scenario_details['target_org']} Information Systems
-security@{scenario_details['target_org'].lower().replace(' ', '')}.com
-
-[This is a simulated phishing email for training purposes - Ollama service not available]"""
+---
+This is a simulated phishing email for security training purposes.
+Generated in demo mode - AI service unavailable.
+{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"""
 
 
 def save_scenario(scenario_details):
